@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>mayara's game</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 2px solid #000;
+        }
+    </style>
+
+</head>
+
+<body>
+
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+     
+    <script>
+
+        const canvas = document.getElementById("gameCanvas");
+
+        const ctx = canvas.getContext("2d");
+
+
+
+        // Configuração inicial
+
+        const player = { x: 50, y: 150, width: 25, height: 25, color: "#ffff00", speed: 5 };
+
+        const portal = { x: 730, y: 200, width: 50, height: 60, color: "#ff284d" };
+
+        let obstacles = [
+
+            { x: 150, y: 50, width: 50, height: 100, color: "#ff748c"},
+
+            { x: 80, y: 220, width: 50, height: 150, color: "#ff#ff748c" },
+
+            { x: 300, y: 100, width: 50, height: 50, color: "#ff748c" },
+
+            { x: 250, y: 400, width: 100, height: 50, color: "#ff748c" },
+
+            { x: 350, y: 210, width: 100, height: 100, color: "#ff748c" },
+
+            { x: 600, y: 160, width: 50, height: 100, color: "#ff748c" },
+
+            { x: 700, y: 400, width: 50, height: 50, color: "#ff748c" },
+
+            { x: 300, y: 100, width: 50, height: 50, color: "#ff748c" },
+
+        ];
+
+        let gameOver = false;
+
+        let currentLevel = 1;
+
+        const totalLevels = 5;
+
+
+
+        // Controle do jogador
+
+        const keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+
+
+
+        document.addEventListener("keydown", (e) => {
+
+            if (e.key in keys) keys[e.key] = true;
+
+        });
+
+
+
+        document.addEventListener("keyup", (e) => {
+
+            if (e.key in keys) keys[e.key] = false;
+
+        });
+
+
+
+        function updatePlayer() {
+
+            if (keys.ArrowUp && player.y > 0) player.y -= player.speed;
+
+            if (keys.ArrowDown && player.y + player.height < canvas.height) player.y += player.speed;
+
+            if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
+
+            if (keys.ArrowRight && player.x + player.width < canvas.width) player.x += player.speed;
+
+        }
+
+
+
+        function checkCollision() {
+
+            // Checar colisão com obstáculos
+
+            for (const obstacle of obstacles) {
+
+                if (
+
+                    player.x < obstacle.x + obstacle.width &&
+
+                    player.x + player.width > obstacle.x &&
+
+                    player.y < obstacle.y + obstacle.height &&
+
+                    player.y + player.height > obstacle.y
+
+                ) {
+
+                    gameOver = true;
+
+                }
+
+            }
+
+
+
+            // Checar se o jogador alcançou o portal
+
+            if (
+
+                player.x < portal.x + portal.width &&
+
+                player.x + player.width > portal.x &&
+
+                player.y < portal.y + portal.height &&
+
+                player.y + player.height > portal.y
+
+            ) {
+
+                if (currentLevel < totalLevels) {
+
+                    nextLevel();
+
+                } else {
+
+                    gameOver = true;
+
+                    window.location.href = "flower.html";
+
+                }
+
+            }
+
+        }
+
+
+
+        function nextLevel() {
+
+            currentLevel++;
+
+            player.x = 730; // Resetar posição do jogador
+
+            player.y = 200;
+
+
+
+            // Alterar obstáculos e portal para a nova fase
+
+            if (currentLevel === 2) {
+
+                obstacles = [
+
+                    { x: 20, y: 130, width: 50, height: 100, color: "#ff748c" },
+
+                    { x: 80, y: 140, width: 50, height: 50, color: "#ff748c" },
+
+                    { x: 400, y: 100, width: 100, height: 50, color: "#ff748c" },
+
+                    { x: 550, y: 350, width: 100, height: 50, color: "#ff748c" },
+
+                    { x: 250, y: 400, width: 100, height: 50, color: "#ff748c" },
+
+                    { x: 350, y: 210, width: 150, height: 150, color: "#ff748c" },
+
+                    { x: 600, y: 190, width: 50, height: 100, color: "#ff748c" },
+
+                    { x: 700, y: 400, width: 50, height: 50, color: "#ff748c" },
+
+                    { x: 300, y: 100, width: 50, height: 50, color: "#ff748c" },
+
+                    { x: 20, y: 290, width: 50, height: 50, color: "#ff748c" },
+
+                ];
+
+                portal.x = 80;
+
+                portal.y = 200;
+
+            } else if (currentLevel === 3) {
+
+                obstacles = [
+
+                    { x: 100, y: 100, width: 50, height: 100, color: "#ff748c" },
+
+                    { x: 250, y: 50, width: 40, height: 120, color: "#ff748c" },
+
+                    { x: 200, y: 200, width: 60, height: 40, color: "#ff748c" },
+
+                    { x: 300, y: 50, width: 50, height: 50, color: "#ff748c" },
+
+                    { x: 500, y: 180, width: 40, height: 120, color: "#ff748c" },
+
+                    { x: 430, y: 180, width: 40, height: 50, color: "#ff748c" },
+
+                    { x: 400, y: 100, width: 60, height: 40, color: "#ff748c" },
+
+                    { x: 300, y: 350, width: 200, height: 50, color: "#ff748c" },
+
+                    { x: 420, y: 270, width: 50, height: 50, color: "#ff748c" },
+
+                ];
+
+                portal.x = 350;
+
+                portal.y = 200;
+
+            } else if (currentLevel === 4) {
+
+                obstacles = [
+
+                    { x: 680, y: 200, width: 50, height: 100, color: "#ff748c" },
+
+                    { x: 420, y: 50, width: 155, height: 50, color: "#ff748c" },
+
+                    { x: 420, y: 80, width: 50, height: 50, color: "#ff748c" },
+
+                    { x: 400, y: 120, width: 50, height: 50, color: "#ff748c" },
+
+                    { x: 500, y: 10, width: 155, height: 50, color: "#ff748c" },
+
+                    { x: 500, y: 150, width: 100, height: 160, color: "#ff748c" },
+
+                    { x: 200, y: 150, width: 70, height: 70, color: "#ff748c" },
+
+                    { x: 300, y: 200, width: 60, height: 60, color: "#ff748c" },
+
+                    { x: 380, y: 250, width: 50, height: 100, color: "#ff748c" },
+
+                    { x: 50, y: 250, width: 150, height: 100, color: "#ff748c" },
+
+                    { x: 180, y: 400, width: 150, height: 50, color: "#ff748c" },
+
+                    { x: 380, y: 350, width: 150, height: 50, color: "#ff748c" },
+
+                    { x: 300, y: 80, width: 50, height: 50, color: "#ff748c" },
+
+                ];
+
+                portal.x = 350;
+
+                portal.y = 80;
+
+            } else if (currentLevel === 5) {
+
+                obstacles = [
+
+                    { x: 100, y: 50, width: 50, height: 150, color: "#ff748c" },
+
+                    { x: 250, y: 100, width: 40, height: 120, color: "#ff748c" },
+
+                    { x: 450, y: 100, width: 50, height: 300, color: "#ff748c" },
+
+                    { x: 550, y: 60, width: 40, height: 400, color: "#ff748c" },
+
+                    { x: 250, y: 50, width: 300, height: 50, color: "#ff748c" },
+
+                    { x: 250, y: 180, width: 150, height: 40, color: "#ff748c" },
+
+                    { x: 180, y: 300, width: 150, height: 40, color: "#ff748c" },
+
+                    { x: 600, y: 240, width: 160, height: 30, color: "#ff748c" },
+
+                    { x: 200, y: 130, width: 70, height: 70, color: "#ff748c" },
+
+                    { x: 250, y: 160, width: 70, height: 70, color: "#ff748c" },
+
+                    { x: 50, y: 250, width: 150, height: 100, color: "#ff748c" },
+
+                    { x: 180, y: 400, width: 150, height: 50, color: "#ff748c" },
+
+                    { x: 380, y: 350, width: 150, height: 50, color: "#ff748c" },
+
+
+
+                ];
+
+                portal.x = 350;
+
+                portal.y = 120;
+
+            }
+
+        }
+
+
+
+        function drawPlayer() {
+
+            ctx.fillStyle = player.color;
+
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+        }
+
+
+
+        function drawObstacles() {
+
+            obstacles.forEach((obstacle) => {
+
+                ctx.fillStyle = obstacle.color;
+
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+            });
+
+        }
+
+
+
+        function drawPortal() {
+
+            ctx.fillStyle = portal.color;
+
+            ctx.fillRect(portal.x, portal.y, portal.width, portal.height);
+
+        }
+
+
+
+        function drawMessage(text) {
+
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#FFF";
+
+            ctx.font = "20px Arial";
+
+            ctx.textAlign = "center";
+
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+        }
+
+
+
+        function gameLoop() {
+
+            if (gameOver) {
+
+                ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = "#FFF";
+
+                ctx.font = "24px Arial";
+
+                ctx.textAlign = "center";
+
+                ctx.fillText(
+
+                    currentLevel === totalLevels ? "Você ganhou seu prêmio!" : "Game Over",
+
+                    canvas.width / 2,
+
+                    canvas.height / 2
+
+                );
+
+                return;
+
+            }
+
+
+
+            // Limpar a tela
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+
+            // Atualizar lógica do jogo
+
+            updatePlayer();
+
+            checkCollision();
+
+
+
+            // Desenhar elementos
+
+            drawPlayer();
+
+            drawObstacles();
+
+            drawPortal();
+
+
+
+            // Continuar o jogo
+
+            requestAnimationFrame(gameLoop);
+
+        }
+
+
+
+        // Iniciar o jogo
+
+        gameLoop();
+
+    </script>
+
+</body>
+
+</html>
